@@ -15,6 +15,10 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+  throw new Error("⚠️ FIREBASE_CONFIG_MISSING: Variáveis de ambiente críticas do Firebase ausentes no arquivo .env");
+}
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
