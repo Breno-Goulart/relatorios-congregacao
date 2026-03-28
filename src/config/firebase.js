@@ -1,11 +1,10 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 import { 
-  getFirestore, 
   initializeFirestore, 
   persistentLocalCache, 
   persistentMultipleTabManager 
-} from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+} from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -21,14 +20,12 @@ const auth = getAuth(app);
 
 let db;
 try {
-  // Configuração otimizada para persistência multi-aba, redução de reads e proteção contra 'undefined'
   db = initializeFirestore(app, { 
     ignoreUndefinedProperties: true, 
-    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
-    experimentalForceLongPolling: true
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
   });
-} catch (error) {
-  db = getFirestore(app);
+} catch (e) {
+  console.error("Firestore initialization error:", e);
 }
 
 export { auth, db };
