@@ -73,7 +73,6 @@ export default function App() {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Sync da lista de publicadores para o Auto-complete
   useEffect(() => {
     if (!db) return;
     const unsub = onSnapshot(collection(db, 'publicadores'), (snap) => {
@@ -94,6 +93,8 @@ export default function App() {
         }
       }
       setMonthlyImage(prev => prev !== coverImage ? coverImage : prev);
+    }, (error) => {
+      // Silencia intencionalmente o erro de permissão para usuários deslogados
     });
     return () => unsub();
   }, []);
@@ -392,7 +393,6 @@ export default function App() {
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Suspense fallback={<div className="flex h-screen items-center justify-center animate-pulse">Carregando congregação...</div>}>
         <Routes>
-          {/* Rota Administrativa protegida */}
           <Route path="/admin" element={
             currentUser ? (
               <AdminDashboard 
@@ -416,7 +416,6 @@ export default function App() {
             )
           } />
 
-          {/* Rota Formulário (Raiz) protegida */}
           <Route path="/" element={
             currentUser ? (
               <Navigate to="/admin" replace />
