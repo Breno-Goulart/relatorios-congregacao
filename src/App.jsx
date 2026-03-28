@@ -217,7 +217,7 @@ export default function App() {
           });
         }
       } catch (error) {
-        console.warn("Auto-cadastro de publicador ignorado por falta de permissão.");
+        // Silenciado intencionalmente: Usuários públicos não têm permissão para alterar a lista de publicadores. Isso é normal e esperado.
       }
 
       setIsSubmitted(true);

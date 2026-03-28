@@ -21,6 +21,7 @@ const auth = getAuth(app);
 
 let db;
 try {
+  // Configuração otimizada para persistência multi-aba, redução de reads e proteção contra 'undefined'
   db = initializeFirestore(app, { 
     ignoreUndefinedProperties: true, 
     localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
