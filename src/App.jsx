@@ -1,6 +1,9 @@
 import React, { useState, useMemo, useEffect, Suspense, lazy, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
+// ==========================================
+// CONFIGURAÇÃO DO FIREBASE (PRODUÇÃO)
+// ==========================================
 import { auth, db } from './config/firebase'; 
 import { 
   collection, 
@@ -26,17 +29,26 @@ import {
   inMemoryPersistence 
 } from 'firebase/auth';
 
+// ==========================================
+// UTILITÁRIOS & COMPONENTES
+// ==========================================
 import ImageLoader from './components/ImageLoader';
 import { formatarNome, formatHoras } from './utils/formatters';
 
+// Code-splitting ao nível de rota
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const FormularioPublicador = lazy(() => import('./pages/FormularioPublicador'));
 
 const capaPadrao = "https://images.unsplash.com/photo-1579546678183-a84849910e97?q=80&w=1000&auto=format&fit=crop";
 
+// Definições constantes fora do componente para evitar re-renderizações desnecessárias
 const meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
 const opcoesEstudos = Array.from({ length: 51 }, (_, i) => i);
 
+/**
+ * Componente Principal App
+ * Gerencia o estado global da aplicação e o roteamento.
+ */
 export default function App() {
   const [view, setView] = useState('form'); 
   const [reports, setReports] = useState([]);
@@ -53,6 +65,7 @@ export default function App() {
   useEffect(() => {
     if (monthlyImage && typeof monthlyImage === 'string' && monthlyImage.startsWith('http')) {
       localStorage.setItem('@Capa_App', monthlyImage);
+      // Previne Garbage Collection prematuro mantendo referência em memória global
       window.__ramCacheImg = new Image();
       window.__ramCacheImg.src = monthlyImage;
     }
@@ -72,6 +85,7 @@ export default function App() {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  // Sync de imagem de capa do banco
   useEffect(() => {
     if (!db) return;
     const configRef = doc(db, 'configuracoes', 'gerais');
@@ -88,6 +102,7 @@ export default function App() {
     return () => unsub();
   }, []);
 
+  // Monitor de Autenticação
   useEffect(() => {
     if (!auth) {
       setAuthLoading(false);
@@ -100,6 +115,7 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
+  // Sync de Relatórios (Real-time)
   useEffect(() => {
     if (!currentUser || !db) return;
     const q = query(collection(db, 'relatorios'), orderBy('dataEnvio', 'desc'));
@@ -112,6 +128,7 @@ export default function App() {
     return () => unsubscribe();
   }, [currentUser]);
 
+  // Sync de Status de Fechamento de Meses
   useEffect(() => {
     if (!db) return;
     const q = query(collection(db, 'fechamentos'));
@@ -188,15 +205,19 @@ export default function App() {
       
       await addDoc(collection(db, 'relatorios'), newReport);
       
-      const pubQuery = query(collection(db, 'publicadores'), where('nome', '==', nomeCorrigido));
-      const pubSnap = await getDocs(pubQuery);
-      if (pubSnap.empty) {
-        await addDoc(collection(db, 'publicadores'), {
-          nome: nomeCorrigido,
-          nome_busca: nomeBusca,
-          tipo_padrao: newReport.tipo,
-          dataCriacao: serverTimestamp()
-        });
+      try {
+        const pubQuery = query(collection(db, 'publicadores'), where('nome', '==', nomeCorrigido));
+        const pubSnap = await getDocs(pubQuery);
+        if (pubSnap.empty) {
+          await addDoc(collection(db, 'publicadores'), {
+            nome: nomeCorrigido,
+            nome_busca: nomeBusca,
+            tipo_padrao: newReport.tipo,
+            dataCriacao: serverTimestamp()
+          });
+        }
+      } catch (error) {
+        console.warn("Auto-cadastro de publicador ignorado por falta de permissão.");
       }
 
       setIsSubmitted(true);
@@ -374,6 +395,7 @@ export default function App() {
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Suspense fallback={<div className="flex h-screen items-center justify-center animate-pulse">Carregando congregação...</div>}>
         <Routes>
+          {/* Rota Administrativa protegida */}
           <Route path="/admin" element={
             currentUser ? (
               <AdminDashboard 
@@ -397,6 +419,7 @@ export default function App() {
             )
           } />
 
+          {/* Rota Formulário (Raiz) protegida */}
           <Route path="/" element={
             currentUser ? (
               <Navigate to="/admin" replace />
