@@ -108,9 +108,20 @@ export default function FormularioPublicador(props) {
                       <Calendar size={14} className="mr-1.5 text-[#4A90E2]" /> Mês
                     </label>
                     <div className="relative">
-                      <select name="mes" value={formData.mes} onChange={handleInputChange} className="w-full pl-4 pr-10 py-3.5 rounded-[12px] border border-[#ddd] bg-[#fafafa] focus:bg-white focus:ring-4 focus:ring-[#4A90E2]/15 focus:border-[#4A90E2] outline-none transition-all text-[0.95rem] text-gray-800 appearance-none font-medium cursor-pointer">
-                        {meses.map(m => <option key={m} value={m}>{m}</option>)}
-                      </select>
+<select name="mes" value={formData.mes} onChange={handleInputChange} className="w-full pl-4 pr-10 py-3.5 rounded-[12px] border border-[#ddd] bg-[#fafafa] focus:bg-white focus:ring-4 focus:ring-[#4A90E2]/15 focus:border-[#4A90E2] outline-none transition-all text-[0.95rem] text-gray-800 appearance-none font-medium cursor-pointer">
+{meses.map((m, idx) => {
+const anoAtualNum = new Date().getFullYear();
+const mesAtualIdx = new Date().getMonth();
+const anoSelecionado = parseInt(formData.ano, 10);
+const isFuturo = (anoSelecionado > anoAtualNum) || (anoSelecionado === anoAtualNum && idx > mesAtualIdx);
+
+                      return (
+                        <option key={m} value={m} disabled={isFuturo}>
+                          {m} {isFuturo ? '(Indisponível)' : ''}
+                        </option>
+                      );
+                    })}
+                  </select>
                       <div className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-gray-400">
                         <ChevronDown size={18} />
                       </div>

@@ -22,7 +22,6 @@ import {
   Plus
 } from 'lucide-react';
 
-// Componentes internos para garantir o funcionamento em arquivo único
 const Button = ({ children, variant = 'primary', className = '', ...props }) => {
   const baseStyles = "px-4 py-2 rounded-xl font-bold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2";
   const variants = {
@@ -81,7 +80,6 @@ const ActionCard = ({ title, description, icon: Icon, onClick, color }) => (
 );
 
 export default function App(props) {
-  // Renomeado para App para ser o default export padrão do ambiente
   return <AdminDashboard {...props} />;
 }
 
@@ -204,7 +202,7 @@ function AdminDashboard({
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 flex items-center justify-center overflow-hidden">
-                  <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">CN</div>
+                  <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain drop-shadow-sm" />
                 </div>
                 <div>
                   <h1 className="text-lg font-bold text-slate-900 leading-none">Painel Administrativo</h1>
@@ -296,9 +294,9 @@ function AdminDashboard({
                   <span className="text-[10px] text-slate-400">Ativos</span>
                 </div>
               </div>
-              <div className="flex w-full justify-between mt-6 text-sm">
+              <div className="flex items-center gap-2 mt-6 text-sm">
                 <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-emerald-500"></span> Participou ({totalParticipations})</div>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-slate-100 border border-slate-200"></span> Faltou ({totalReports - totalParticipations})</div>
+                <div className="flex items-center gap-2 ml-4"><span className="w-3 h-3 rounded-full bg-slate-100 border border-slate-200"></span> Faltou ({totalReports - totalParticipations})</div>
               </div>
             </div>
 
@@ -439,26 +437,6 @@ function AdminDashboard({
                 <Plus size={18} />
                 Novo Registro
               </Button>
-            </div>
-            
-            <div className="sm:hidden fixed bottom-6 right-6 z-40 flex flex-col-reverse items-end gap-3 group">
-              <button 
-                onClick={() => {
-                  setSelectedReport(null);
-                  setIsReportModalOpen(true);
-                }}
-                className="w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-200 flex items-center justify-center hover:bg-blue-700 transition-transform active:scale-95"
-              >
-                <Plus size={24} />
-              </button>
-              <div className="flex flex-col gap-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all translate-y-4 group-hover:translate-y-0">
-                <button onClick={() => window.print()} className="w-12 h-12 bg-red-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-red-700 active:scale-95">
-                  <Download size={20} />
-                </button>
-                <button onClick={handleExportData} className="w-12 h-12 bg-emerald-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-emerald-700 active:scale-95">
-                  <Download size={20} />
-                </button>
-              </div>
             </div>
           </div>
 
@@ -609,6 +587,26 @@ function AdminDashboard({
         </main>
       </div>
 
+  <div className="sm:hidden fixed bottom-6 right-6 z-40 flex flex-col-reverse items-end gap-3 group">
+    <button 
+      onClick={() => {
+        setSelectedReport(null);
+        setIsReportModalOpen(true);
+      }}
+      className="w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-200 flex items-center justify-center hover:bg-blue-700 transition-transform active:scale-95"
+    >
+      <Plus size={24} />
+    </button>
+    <div className="flex flex-col gap-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all translate-y-4 group-hover:translate-y-0">
+      <button onClick={() => window.print()} className="w-12 h-12 bg-red-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-red-700 active:scale-95">
+        <Download size={20} />
+      </button>
+      <button onClick={handleExportData} className="w-12 h-12 bg-emerald-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-emerald-700 active:scale-95">
+        <Download size={20} />
+      </button>
+    </div>
+  </div>
+
       {isReportModalOpen && (
         <ReportModal 
           report={selectedReport}
@@ -702,14 +700,14 @@ function ReportModal({ report, reports, onClose, onSave, meses, anos, opcoesEstu
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
-      <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
-        <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-slate-800">{report ? 'Editar Relatório' : 'Novo Lançamento'}</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 p-1"><XCircle size={24} /></button>
-        </div>
+<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
+<div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+<div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center shrink-0">
+<h2 className="text-xl font-bold text-slate-800">{report ? 'Editar Relatório' : 'Novo Lançamento'}</h2>
+<button onClick={onClose} className="text-slate-400 hover:text-slate-600 p-1"><XCircle size={24} /></button>
+</div>
         
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+    <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
           <div className="relative w-full">
             <Input 
               label="Nome do Irmão(ã)" 
@@ -744,16 +742,17 @@ function ReportModal({ report, reports, onClose, onSave, meses, anos, opcoesEstu
                 value={formData.mes}
                 onChange={(e) => setFormData({...formData, mes: e.target.value})}
               >
-                {meses.map((m, idx) => {
-                  const anoAtual = new Date().getFullYear().toString();
-                  const mesAtualIdx = new Date().getMonth();
-                  const isFuturo = formData.ano === anoAtual && idx > mesAtualIdx;
-                  return (
-                    <option key={m} value={m} disabled={isFuturo}>
-                      {m} {isFuturo ? '(Indisponível)' : ''}
-                    </option>
-                  );
-                })}
+{meses.map((m, idx) => {
+const anoAtualNum = new Date().getFullYear();
+const mesAtualIdx = new Date().getMonth();
+const anoSelecionado = parseInt(formData.ano, 10);
+const isFuturo = (anoSelecionado > anoAtualNum) || (anoSelecionado === anoAtualNum && idx > mesAtualIdx);
+return (
+<option key={m} value={m} disabled={isFuturo}>
+{m} {isFuturo ? '(Indisponível)' : ''}
+</option>
+);
+})}
               </select>
             </div>
             <div className="space-y-1.5">
