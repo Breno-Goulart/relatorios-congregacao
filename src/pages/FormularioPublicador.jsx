@@ -72,7 +72,7 @@ export default function FormularioPublicador(props) {
                 type="password" 
                 autoComplete="current-password"
                 value={adminPassword} 
-                onChange={(e) => setAdminPassword(setAdminPassword)} 
+                onChange={(e) => setAdminPassword(e.target.value)} 
                 placeholder="••••••••" 
                 required 
                 errorMessage={adminError} 
