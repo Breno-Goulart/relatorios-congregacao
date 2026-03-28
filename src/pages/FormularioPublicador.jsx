@@ -7,6 +7,7 @@ export default function FormularioPublicador(props) {
   const {
     view,
     setView,
+    publicadoresList = [],
     monthlyImage,
     handleAdminLogin,
     adminEmail,
@@ -71,7 +72,7 @@ export default function FormularioPublicador(props) {
                 type="password" 
                 autoComplete="current-password"
                 value={adminPassword} 
-                onChange={(e) => setAdminPassword(e.target.value)} 
+                onChange={(e) => setAdminPassword(setAdminPassword)} 
                 placeholder="••••••••" 
                 required 
                 errorMessage={adminError} 
@@ -108,20 +109,20 @@ export default function FormularioPublicador(props) {
                       <Calendar size={14} className="mr-1.5 text-[#4A90E2]" /> Mês
                     </label>
                     <div className="relative">
-<select name="mes" value={formData.mes} onChange={handleInputChange} className="w-full pl-4 pr-10 py-3.5 rounded-[12px] border border-[#ddd] bg-[#fafafa] focus:bg-white focus:ring-4 focus:ring-[#4A90E2]/15 focus:border-[#4A90E2] outline-none transition-all text-[0.95rem] text-gray-800 appearance-none font-medium cursor-pointer">
-{meses.map((m, idx) => {
-const anoAtualNum = new Date().getFullYear();
-const mesAtualIdx = new Date().getMonth();
-const anoSelecionado = parseInt(formData.ano, 10);
-const isFuturo = (anoSelecionado > anoAtualNum) || (anoSelecionado === anoAtualNum && idx > mesAtualIdx);
+                      <select name="mes" value={formData.mes} onChange={handleInputChange} className="w-full pl-4 pr-10 py-3.5 rounded-[12px] border border-[#ddd] bg-[#fafafa] focus:bg-white focus:ring-4 focus:ring-[#4A90E2]/15 focus:border-[#4A90E2] outline-none transition-all text-[0.95rem] text-gray-800 appearance-none font-medium cursor-pointer">
+                        {meses.map((m, idx) => {
+                          const anoAtualNum = new Date().getFullYear();
+                          const mesAtualIdx = new Date().getMonth();
+                          const anoSelecionado = parseInt(formData.ano, 10);
+                          const isFuturo = (anoSelecionado > anoAtualNum) || (anoSelecionado === anoAtualNum && idx > mesAtualIdx);
 
-                      return (
-                        <option key={m} value={m} disabled={isFuturo}>
-                          {m} {isFuturo ? '(Indisponível)' : ''}
-                        </option>
-                      );
-                    })}
-                  </select>
+                          return (
+                            <option key={m} value={m} disabled={isFuturo}>
+                              {m} {isFuturo ? '(Indisponível)' : ''}
+                            </option>
+                          );
+                        })}
+                      </select>
                       <div className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-gray-400">
                         <ChevronDown size={18} />
                       </div>
@@ -143,18 +144,26 @@ const isFuturo = (anoSelecionado > anoAtualNum) || (anoSelecionado === anoAtualN
                   </div>
                 </div>
 
-                <Input 
-                  label="Nome Completo" 
-                  icon={User}
-                  type="text" 
-                  name="nome" 
-                  required 
-                  value={formData.nome} 
-                  onChange={handleInputChange} 
-                  placeholder="Ex: João da Silva"
-                  autoComplete="name"
-                  autoCapitalize="words"
-                />
+<div className="relative w-full">
+<Input
+label="Nome Completo"
+icon={User}
+type="text"
+name="nome"
+required
+value={formData.nome}
+onChange={handleInputChange}
+placeholder="Ex: João da Silva"
+autoComplete="off"
+autoCapitalize="words"
+list="lista-publicadores"
+/>
+<datalist id="lista-publicadores">
+{publicadoresList.map(nome => (
+<option key={nome} value={nome} />
+))}
+</datalist>
+</div>
 
                 <div className="bg-[#f8fafd] p-5 rounded-[16px] border border-[#e1ebf5]">
                   <label className="block text-[0.9rem] font-medium text-gray-700 mb-3 text-center">Participou no ministério este mês?</label>

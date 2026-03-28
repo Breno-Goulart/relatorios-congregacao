@@ -41,6 +41,7 @@ export default function App() {
   const [view, setView] = useState('form'); 
   const [reports, setReports] = useState([]);
   const [fechamentos, setFechamentos] = useState({});
+  const [publicadoresList, setPublicadoresList] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
 
@@ -71,6 +72,15 @@ export default function App() {
     horas: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Sync da lista de publicadores para o Auto-complete
+  useEffect(() => {
+    if (!db) return;
+    const unsub = onSnapshot(collection(db, 'publicadores'), (snap) => {
+      setPublicadoresList(snap.docs.map(doc => doc.data().nome).filter(Boolean));
+    });
+    return () => unsub();
+  }, []);
 
   useEffect(() => {
     if (!db) return;
@@ -382,6 +392,7 @@ export default function App() {
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Suspense fallback={<div className="flex h-screen items-center justify-center animate-pulse">Carregando congregação...</div>}>
         <Routes>
+          {/* Rota Administrativa protegida */}
           <Route path="/admin" element={
             currentUser ? (
               <AdminDashboard 
@@ -405,6 +416,7 @@ export default function App() {
             )
           } />
 
+          {/* Rota Formulário (Raiz) protegida */}
           <Route path="/" element={
             currentUser ? (
               <Navigate to="/admin" replace />
@@ -412,6 +424,7 @@ export default function App() {
               <FormularioPublicador 
                 view={view}
                 setView={setView}
+                publicadoresList={publicadoresList}
                 monthlyImage={monthlyImage}
                 handleAdminLogin={handleAdminLogin}
                 adminEmail={adminEmail}
