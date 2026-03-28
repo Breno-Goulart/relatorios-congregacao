@@ -21,6 +21,8 @@ const Input = React.forwardRef(({ label, icon: Icon, errorMessage, className = '
           id={inputId}
           ref={ref}
           type={inputType}
+          aria-invalid={!!errorMessage}
+          aria-describedby={errorMessage ? `${inputId}-error` : undefined}
           className={`w-full px-4 py-3.5 rounded-[12px] border border-[#ddd] bg-[#fafafa] focus:bg-white focus:ring-4 focus:ring-[#4A90E2]/15 focus:border-[#4A90E2] outline-none transition-all text-[0.95rem] text-gray-800 ${isPassword ? 'pr-12' : ''}`}
           {...props} 
         />
@@ -36,7 +38,7 @@ const Input = React.forwardRef(({ label, icon: Icon, errorMessage, className = '
         )}
       </div>
       {errorMessage && (
-        <p className="text-red-500 text-xs mt-2 font-medium flex items-center bg-red-50 p-2.5 rounded-lg border border-red-100">
+        <p id={`${inputId}-error`} aria-live="polite" className="text-red-500 text-xs mt-2 font-medium flex items-center bg-red-50 p-2.5 rounded-lg border border-red-100">
           {errorMessage}
         </p>
       )}

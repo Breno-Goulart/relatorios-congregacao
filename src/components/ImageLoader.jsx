@@ -13,6 +13,7 @@ export default React.memo(function ImageLoader({ src, alt, className = "", width
         alt={alt}
         loading={priority ? "eager" : undefined}
         onLoad={() => setIsLoading(false)}
+        onError={() => setIsLoading(false)}
         className={`w-full h-full object-cover transition-opacity duration-300 ease-in-out relative z-20 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
       />
     </div>
