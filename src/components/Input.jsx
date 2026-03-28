@@ -29,7 +29,7 @@ const Input = React.forwardRef(({ label, icon: Icon, errorMessage, className = '
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-            className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-[#4A90E2] transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 flex items-center justify-center text-gray-400 hover:text-[#4A90E2] transition-colors rounded-full"
           >
             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
