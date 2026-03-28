@@ -77,6 +77,8 @@ export default function App() {
     if (!db) return;
     const unsub = onSnapshot(collection(db, 'publicadores'), (snap) => {
       setPublicadoresList(snap.docs.map(doc => doc.data().nome).filter(Boolean));
+    }, (error) => {
+      // Silenciado intencionalmente: permissão negada para usuários não logados lerem a base de publicadores diretamente
     });
     return () => unsub();
   }, []);
