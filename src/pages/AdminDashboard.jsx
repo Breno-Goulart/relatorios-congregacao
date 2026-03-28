@@ -394,9 +394,9 @@ export default function AdminDashboard({
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="overflow-x-auto w-full">
-              <table className="w-full text-left border-collapse min-w-[800px]">
-                <thead>
+            <div className="w-full bg-slate-50 sm:bg-white rounded-2xl p-2 sm:p-0">
+              <table className="w-full text-left border-collapse block sm:table min-w-full sm:min-w-[800px]">
+                <thead className="hidden sm:table-header-group">
                   <tr className="bg-slate-50/50 border-b border-slate-100">
                     <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Publicador</th>
                     <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Período</th>
@@ -407,11 +407,11 @@ export default function AdminDashboard({
                     <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-100 block sm:table-row-group">
                   {paginatedData.length > 0 ? (
                     paginatedData.map((report, index) => (
-                      <tr key={report.id} className="hover:bg-slate-50/50 transition-all duration-200 ease-out group animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards will-change-transform" style={{ animationDelay: `${index * 50}ms` }}>
-                        <td className="px-6 py-4">
+                      <tr key={report.id} className="hover:bg-slate-50 sm:hover:bg-slate-50/50 transition-all duration-200 ease-out group animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards will-change-transform flex flex-col sm:table-row bg-white sm:bg-transparent p-4 sm:p-0 mb-3 sm:mb-0 rounded-2xl sm:rounded-none shadow-sm sm:shadow-none border border-slate-100 sm:border-0 sm:border-b last:border-0" style={{ animationDelay: `${index * 50}ms` }}>
+                        <td className="px-0 sm:px-6 py-2 sm:py-4 flex justify-between sm:table-cell items-center">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 text-xs font-bold">
                               {report.nome?.charAt(0)}
@@ -424,32 +424,32 @@ export default function AdminDashboard({
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-0 sm:px-6 py-2 sm:py-4 flex justify-between sm:table-cell items-center">
                           <div className="flex flex-col">
                             <span className="text-sm text-slate-700 font-medium">{report.mes}</span>
                             <span className="text-xs text-slate-400">{report.ano}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-0 sm:px-6 py-2 sm:py-4 flex justify-between sm:table-cell items-center">
                           <span className={`text-xs font-medium px-2 py-1 rounded-lg ${
                             report.tipo?.includes('Pioneiro') ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-100 text-slate-600'
                           }`}>
                             {report.tipo}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-0 sm:px-6 py-2 sm:py-4 flex justify-between sm:table-cell items-center sm:text-center">
                           <span className="text-sm font-bold text-slate-700">{report.horas || '--'}</span>
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-0 sm:px-6 py-2 sm:py-4 flex justify-between sm:table-cell items-center sm:text-center">
                           <span className="text-sm font-bold text-slate-700">{report.estudos || '0'}</span>
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-0 sm:px-6 py-2 sm:py-4 flex justify-between sm:table-cell items-center sm:text-center">
                           <span className="text-xs text-slate-500 font-medium whitespace-nowrap">
                             {report.dataEnvio?.seconds ? new Date(report.dataEnvio.seconds * 1000).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'}) : '--'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-right">
-                          <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <td className="px-0 sm:px-6 py-2 sm:py-4 flex justify-between sm:table-cell items-center sm:text-right">
+                          <div className="flex justify-end gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                             <button 
                               onClick={() => handleEditClick(report)}
                               className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
@@ -467,8 +467,8 @@ export default function AdminDashboard({
                       </tr>
                     ))
                   ) : (
-                    <tr>
-                      <td colSpan="7" className="px-6 py-12 text-center">
+                    <tr className="block sm:table-row">
+                      <td colSpan="7" className="px-6 py-12 text-center block sm:table-cell">
                         <div className="flex flex-col items-center gap-2 text-slate-400">
                           <Search size={40} strokeWidth={1.5} />
                           <p className="text-sm font-medium">Nenhum relatório encontrado para os filtros aplicados.</p>
@@ -558,7 +558,23 @@ function ReportModal({ report, onClose, onSave, meses, anos, opcoesEstudos }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const success = await onSave(formData);
+
+    const nomeCorrigido = formData.nome
+      .trim()
+      .replace(/\s+/g, ' ')
+      .toUpperCase();
+      
+    const nomeBusca = nomeCorrigido
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    const dadosFinal = {
+      ...formData,
+      nome: nomeCorrigido,
+      nome_busca: nomeBusca
+    };
+
+    const success = await onSave(dadosFinal);
     if (success !== false) onClose();
     setLoading(false);
   };
@@ -600,7 +616,16 @@ function ReportModal({ report, onClose, onSave, meses, anos, opcoesEstudos }) {
                 value={formData.mes}
                 onChange={(e) => setFormData({...formData, mes: e.target.value})}
               >
-                {meses.map(m => <option key={m} value={m}>{m}</option>)}
+                {meses.map((m, idx) => {
+                  const anoAtual = new Date().getFullYear().toString();
+                  const mesAtualIdx = new Date().getMonth();
+                  const isFuturo = formData.ano === anoAtual && idx > mesAtualIdx;
+                  return (
+                    <option key={m} value={m} disabled={isFuturo}>
+                      {m} {isFuturo ? '(Indisponível)' : ''}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <div className="space-y-1.5">
