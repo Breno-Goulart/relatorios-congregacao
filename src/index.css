@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Esconde o "olho" e o "X" nativos do navegador em campos de senha */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+@media print {
+  header, button, select, input, .quick-actions-hide-print {
+    display: none !important;
+  }
+  body, main {
+    background-color: white !important;
+  }
+  .bg-white.rounded-2xl.shadow-sm.border {
+    box-shadow: none !important;
+    border: none !important;
+  }
+  table th, table td {
+    border-bottom: 1px solid #ddd;
+    color: black !important;
+  }
+}

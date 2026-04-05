@@ -1,0 +1,45 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Firebase
+.firebase/
+firebase-debug.log*
+
+# Dependências (O MOTOR QUE FICA SÓ NO PC)
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Editor de Código
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# CHAVES DE SEGURANÇA E SENHAS
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*
+!.env.example
+functions/.env
+# ... (suas configurações atuais)
+
+# Notas de configuração pessoal
+Configuração VS Code.txt
+# Local Netlify folder
+.netlify
